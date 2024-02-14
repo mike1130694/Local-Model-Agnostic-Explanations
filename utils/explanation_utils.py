@@ -367,7 +367,7 @@ class ExplanationUtils:
             lime_exp.show_in_notebook(show_all=False)
         return lime_exp
 
-    def get_shap_exp(self, explainer, idx, data_source='train', visualize=True, **kwargs):
+    def get_shap_exp(self, explainer, idx, data_source='train', visualize=True, plot='force_plot',**kwargs):
 
         """
         Computes SHAP explanation, displays html visualization, and returns LIME explanation object
@@ -398,7 +398,10 @@ class ExplanationUtils:
         if visualize:
             import shap
             #shap.force_plot(explainer.expected_value, shap_values, self.X_train.iloc[idx, :], matplotlib=True)
-            shap.force_plot(explainer.expected_value, shap_values, self.X_train.loc[idx], matplotlib=True)
+            if plot == 'force_plot':
+                shap.force_plot(explainer.expected_value, shap_values, self.X_train.loc[idx], matplotlib=True)
+            elif plot == 'cascade':
+                shap.plots.waterfall(explainer.expected_value, shap_values, self.X_train.loc[idx])
         return shap_values
 
     def lime_exp_to_df(self, explanations, merge_data='train'):
